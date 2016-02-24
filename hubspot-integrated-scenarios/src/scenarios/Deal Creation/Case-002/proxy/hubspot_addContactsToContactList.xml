@@ -1,81 +1,82 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-   Copyright (c) 2005-2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
-
-   WSO2 Inc. licenses this file to you under the Apache License,
-   Version 2.0 (the "License"); you may not use this file except
-   in compliance with the License.
-   You may obtain a copy of the License at
-
-   http://www.apache.org/licenses/LICENSE-2.0
-
-   Unless required by applicable law or agreed to in writing,
-   software distributed under the License is distributed on an
-   "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-   KIND, either express or implied. See the License for the
-   specific language governing permissions and limitations
-   under the License.
+~  Copyright (c) 2016, WSO2 Inc. (http://wso2.com) All Rights Reserved.
+~
+~  WSO2 Inc. licenses this file to you under the Apache License,
+~  Version 2.0 (the "License"); you may not use this file except
+~  in compliance with the License.
+~  You may obtain a copy of the License at
+~
+~   http://www.apache.org/licenses/LICENSE-2.0
+~
+~  Unless required by applicable law or agreed to in writing,
+~  software distributed under the License is distributed on an
+~  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+~  KIND, either express or implied.  See the License for the
+~  specific language governing permissions and limitations
+~  under the License.
 -->
-<proxy xmlns="http://ws.apache.org/ns/synapse" name="hubSpot_addContactsToContactList" transports="https,http" statistics="disable" trace="disable" startOnLoad="true">
-   <target>
-      <inSequence onError="faultHandlerSeq">
-         <!-- ActiveCampaign parameters. -->
-         <property name="activeCampaign.apiUrl" expression="json-eval($.activeCampaign.apiUrl)" />
-         <property name="activeCampaign.apiKey" expression="json-eval($.activeCampaign.apiKey)" />
-         <property name="activeCampaign.campaignName" expression="json-eval($.activeCampaign.campaignName)" />
-         <property name="activeCampaign.isFull" value="1" />
+<proxy xmlns="http://ws.apache.org/ns/synapse" name="hubSpot_addContactsToContactList" transports="https,http"
+       statistics="disable" trace="disable" startOnLoad="true">
+    <target>
+        <inSequence onError="faultHandlerSeq">
+            <!-- ActiveCampaign parameters. -->
+            <property name="activeCampaign.apiUrl" expression="json-eval($.activeCampaign.apiUrl)"/>
+            <property name="activeCampaign.apiKey" expression="json-eval($.activeCampaign.apiKey)"/>
+            <property name="activeCampaign.campaignName" expression="json-eval($.activeCampaign.campaignName)"/>
+            <property name="activeCampaign.isFull" value="1"/>
 
-         <!-- 123Contactform parameters. -->
-         <property name="contactform.apiKey" expression="json-eval($.contactForm.apiKey)" />
-         <property name="contactform.apiUrl" value="https://www.123contactform.com" />
-         <property name="contactform.formId" expression="json-eval($.contactForm.formId)" />
+            <!-- 123Contactform parameters. -->
+            <property name="contactform.apiKey" expression="json-eval($.contactForm.apiKey)"/>
+            <property name="contactform.apiUrl" value="https://www.123contactform.com"/>
+            <property name="contactform.formId" expression="json-eval($.contactForm.formId)"/>
 
-         <!-- Common properties -->
-         <property name="output" value="json" />
-         <property name="submissionIndex" value="0.0" scope="operation" />
-         <property name="clickerIndex" value="0" scope="operation" />
-         <property name="noOfSubmissionIds" value="0.0" scope="operation" />
-         <property name="emptyID" value="{}" />
-         <property name="noOfContactsExist" value="0.0" scope="operation" />
-         <property name="noOfFormContactsExist" value="0.0" scope="operation" />
+            <!-- Common properties -->
+            <property name="output" value="json"/>
+            <property name="submissionIndex" value="0.0" scope="operation"/>
+            <property name="clickerIndex" value="0" scope="operation"/>
+            <property name="noOfSubmissionIds" value="0.0" scope="operation"/>
+            <property name="emptyID" value="{}"/>
+            <property name="noOfContactsExist" value="0.0" scope="operation"/>
+            <property name="noOfFormContactsExist" value="0.0" scope="operation"/>
 
-         <!-- Listing contact lists -->
-         <activecampaign.init>
-            <apiOutput>{$ctx:output}</apiOutput>
-            <apiUrl>{$ctx:activeCampaign.apiUrl}</apiUrl>
-            <apiKey>{$ctx:activeCampaign.apiKey}</apiKey>
-         </activecampaign.init>
-         <activecampaign.listMailingLists>
-            <isFull>{$ctx:activeCampaign.isFull}</isFull>
-            <nameFilter>{$ctx:activeCampaign.campaignName}</nameFilter>
-         </activecampaign.listMailingLists>
+            <!-- Listing contact lists -->
+            <activecampaign.init>
+                <apiOutput>{$ctx:output}</apiOutput>
+                <apiUrl>{$ctx:activeCampaign.apiUrl}</apiUrl>
+                <apiKey>{$ctx:activeCampaign.apiKey}</apiKey>
+            </activecampaign.init>
+            <activecampaign.listMailingLists>
+                <isFull>{$ctx:activeCampaign.isFull}</isFull>
+                <nameFilter>{$ctx:activeCampaign.campaignName}</nameFilter>
+            </activecampaign.listMailingLists>
 
-         <property name="listMailingListsResultCode" expression="json-eval($.result_code)" />
+            <property name="listMailingListsResultCode" expression="json-eval($.result_code)"/>
 
-         <filter xpath="get-property('listMailingListsResultCode') > 0">
-            <then>
+            <filter xpath="get-property('listMailingListsResultCode') > 0">
+                <then>
 
-               <property name="activeCampaign.listId" expression="json-eval($.0.id)" />
+                    <property name="activeCampaign.listId" expression="json-eval($.0.id)"/>
 
-               <filter xpath="boolean(get-property('contactform.apiKey'))">
-                  <then>
-                     <contactform.init>
-                        <apiOutput>{$ctx:output}</apiOutput>
-                        <apiUrl>{$ctx:contactform.apiUrl}</apiUrl>
-                        <apiKey>{$ctx:contactform.apiKey}</apiKey>
-                     </contactform.init>
-                     <contactform.getFields>
-                        <formId>{$ctx:contactform.formId}</formId>
-                     </contactform.getFields>
-
-                     <property name="getFieldsError" expression="json-eval($.errorMessage)" />
-
-                     <filter source="boolean(get-property('getFieldsError'))" regex="false">
+                    <filter xpath="boolean(get-property('contactform.apiKey'))">
                         <then>
+                            <contactform.init>
+                                <apiOutput>{$ctx:output}</apiOutput>
+                                <apiUrl>{$ctx:contactform.apiUrl}</apiUrl>
+                                <apiKey>{$ctx:contactform.apiKey}</apiKey>
+                            </contactform.init>
+                            <contactform.getFields>
+                                <formId>{$ctx:contactform.formId}</formId>
+                            </contactform.getFields>
 
-                           <property name="contactform.fields" expression="json-eval($.fields)" />
-                           <script language="js">
-                              <![CDATA[
+                            <property name="getFieldsError" expression="json-eval($.errorMessage)"/>
+
+                            <filter source="boolean(get-property('getFieldsError'))" regex="false">
+                                <then>
+
+                                    <property name="contactform.fields" expression="json-eval($.fields)"/>
+                                    <script language="js">
+                                        <![CDATA[
                                  var filedList = eval("(" + mc.getProperty("contactform.fields") +")");
                                  for (var i = 0;i<filedList.length;i++) {
                                     var fieldTitle = "" + filedList[i].fieldTitle;
@@ -90,35 +91,38 @@
                                     }
                                  }
                               ]]>
-                           </script>
+                                    </script>
 
-                           <contactform.init>
-                              <apiOutput>{$ctx:output}</apiOutput>
-                              <apiUrl>{$ctx:contactform.apiUrl}</apiUrl>
-                              <apiKey>{$ctx:contactform.apiKey}</apiKey>
-                           </contactform.init>
-                           <contactform.getFormSubmissions>
-                              <formId>{$ctx:contactform.formId}</formId>
-                           </contactform.getFormSubmissions>
+                                    <contactform.init>
+                                        <apiOutput>{$ctx:output}</apiOutput>
+                                        <apiUrl>{$ctx:contactform.apiUrl}</apiUrl>
+                                        <apiKey>{$ctx:contactform.apiKey}</apiKey>
+                                    </contactform.init>
+                                    <contactform.getFormSubmissions>
+                                        <formId>{$ctx:contactform.formId}</formId>
+                                    </contactform.getFormSubmissions>
 
-                           <property name="getFormSubmissionsError" expression="json-eval($.errorMessage)" />
+                                    <property name="getFormSubmissionsError" expression="json-eval($.errorMessage)"/>
 
-                           <filter source="boolean(get-property('getFormSubmissionsError'))" regex="false">
-                              <then>
+                                    <filter source="boolean(get-property('getFormSubmissionsError'))" regex="false">
+                                        <then>
 
-                                 <property name="noOfSubmissionIds" expression="count(//submissions)" scope="operation" />
-                                 <filter xpath="get-property('operation','noOfSubmissionIds') > '0'">
-                                    <then>
+                                            <property name="noOfSubmissionIds" expression="count(//submissions)"
+                                                      scope="operation"/>
+                                            <filter xpath="get-property('operation','noOfSubmissionIds') > '0'">
+                                                <then>
 
 
-                                       <iterate id="submissionIterator" expression="//submissions" continueParent="true" sequential="true">
-                                          <target>
-                                             <sequence>
+                                                    <iterate id="submissionIterator" expression="//submissions"
+                                                             continueParent="true" sequential="true">
+                                                        <target>
+                                                            <sequence>
 
-                                                <property name="contcatform.submissions" expression="json-eval($.submissions.fields)" />
+                                                                <property name="contcatform.submissions"
+                                                                          expression="json-eval($.submissions.fields)"/>
 
-                                                <script language="js">
-                                                   <![CDATA[       
+                                                                <script language="js">
+                                                                    <![CDATA[
                                                       var submission =  eval("(" + mc.getProperty("contcatform.submissions") +")");
                                                       var emailId = mc.getProperty('contactform.email.id');
                                                       var firstNameId = mc.getProperty('contactform.firstName.id');
@@ -147,31 +151,39 @@
                                                        mc.setPayloadJSON(payload);                         
                                                                                                                                               
                                                    ]]>
-                                                </script>
+                                                                </script>
 
-                                                <property name="listDetails" expression="json-eval($.)" />
-                                                <property name="Host" value="host.wso2.com" scope="transport" />
+                                                                <property name="listDetails"
+                                                                          expression="json-eval($.)"/>
+                                                                <property name="Host" value="host.wso2.com"
+                                                                          scope="transport"/>
 
-                                                <activecampaign.init>
-                                                   <apiOutput>{$ctx:output}</apiOutput>
-                                                   <apiUrl>{$ctx:activeCampaign.apiUrl}</apiUrl>
-                                                   <apiKey>{$ctx:activeCampaign.apiKey}</apiKey>
-                                                </activecampaign.init>
-                                                <activecampaign.listContacts>
-                                                   <emailFilter>{$ctx:contactform.email.value}</emailFilter>
-                                                   <isFull>1</isFull>
-                                                </activecampaign.listContacts>
+                                                                <activecampaign.init>
+                                                                    <apiOutput>{$ctx:output}</apiOutput>
+                                                                    <apiUrl>{$ctx:activeCampaign.apiUrl}</apiUrl>
+                                                                    <apiKey>{$ctx:activeCampaign.apiKey}</apiKey>
+                                                                </activecampaign.init>
+                                                                <activecampaign.listContacts>
+                                                                    <emailFilter>{$ctx:contactform.email.value}
+                                                                    </emailFilter>
+                                                                    <isFull>1</isFull>
+                                                                </activecampaign.listContacts>
 
-                                                <property name="listContactsResultCode" expression="json-eval($.result_code)" />
-                                                <property name="tags" expression="fn:concat('Campaign name:',get-property('activeCampaign.campaignName'),'(123ContactForm)')" />
-                                                <filter xpath="get-property('listContactsResultCode') > '0'">
-                                                   <then>
-                                                      <property name="listLists" expression="json-eval($.0.listslist)" />
-                                                      <property name="existingContactListId" expression="json-eval($.0.listid)" />
-                                                      <property name="orgName" expression="json-eval($.0.orgname)" />
+                                                                <property name="listContactsResultCode"
+                                                                          expression="json-eval($.result_code)"/>
+                                                                <property name="tags"
+                                                                          expression="fn:concat('Campaign name:',get-property('activeCampaign.campaignName'),'(123ContactForm)')"/>
+                                                                <filter xpath="get-property('listContactsResultCode') > '0'">
+                                                                    <then>
+                                                                        <property name="listLists"
+                                                                                  expression="json-eval($.0.listslist)"/>
+                                                                        <property name="existingContactListId"
+                                                                                  expression="json-eval($.0.listid)"/>
+                                                                        <property name="orgName"
+                                                                                  expression="json-eval($.0.orgname)"/>
 
-                                                      <script language="js">
-                                                         <![CDATA[  
+                                                                        <script language="js">
+                                                                            <![CDATA[
                                                             var campaignList =  "" + mc.getProperty("activeCampaign.listId") ;     
                                                             var listLists =  "" +  mc.getProperty("listLists") ;
                                                             var existingContactListId =   mc.getProperty("existingContactListId") ;
@@ -189,204 +201,265 @@
                                                             }                                                                               
                                                                                                                                                     
                                                          ]]>
-                                                      </script>
+                                                                        </script>
 
 
-                                                      <filter source="boolean(get-property('listDetails'))" regex="false">
-                                                         <then>
-                                                            <property name="noOfFormContactsExist" expression="get-property('operation','noOfFormContactsExist') + 1" scope="operation" />
-                                                         </then>
-                                                      </filter>
+                                                                        <filter source="boolean(get-property('listDetails'))"
+                                                                                regex="false">
+                                                                            <then>
+                                                                                <property name="noOfFormContactsExist"
+                                                                                          expression="get-property('operation','noOfFormContactsExist') + 1"
+                                                                                          scope="operation"/>
+                                                                            </then>
+                                                                        </filter>
 
 
-                                                      <property name="contactId" expression="json-eval($.0.id)" />
+                                                                        <property name="contactId"
+                                                                                  expression="json-eval($.0.id)"/>
 
-                                                      <property name="Host" value="host.wso2.com" scope="transport" />
-                                                      <activecampaign.init>
-                                                         <apiOutput>{$ctx:output}</apiOutput>
-                                                         <apiUrl>{$ctx:activeCampaign.apiUrl}</apiUrl>
-                                                         <apiKey>{$ctx:activeCampaign.apiKey}</apiKey>
-                                                      </activecampaign.init>
-                                                      <activecampaign.updateContact>
-                                                         <contactId>{$ctx:contactId}</contactId>
-                                                         <email>{$ctx:contactform.email.value}</email>
-                                                         <tags>{$ctx:tags}</tags>
-                                                         <listDetails>{$ctx:listDetails}</listDetails>
-                                                      </activecampaign.updateContact>
+                                                                        <property name="Host" value="host.wso2.com"
+                                                                                  scope="transport"/>
+                                                                        <activecampaign.init>
+                                                                            <apiOutput>{$ctx:output}</apiOutput>
+                                                                            <apiUrl>{$ctx:activeCampaign.apiUrl}
+                                                                            </apiUrl>
+                                                                            <apiKey>{$ctx:activeCampaign.apiKey}
+                                                                            </apiKey>
+                                                                        </activecampaign.init>
+                                                                        <activecampaign.updateContact>
+                                                                            <contactId>{$ctx:contactId}</contactId>
+                                                                            <email>{$ctx:contactform.email.value}
+                                                                            </email>
+                                                                            <tags>{$ctx:tags}</tags>
+                                                                            <listDetails>{$ctx:listDetails}
+                                                                            </listDetails>
+                                                                        </activecampaign.updateContact>
 
-                                                      <property name="updateContactResultCode" expression="json-eval($.result_code)" />
-                                                      <filter xpath="get-property('listContactsResultCode') > '0'">
-                                                         <then>
-                                                            <filter xpath="get-property('listDetails') != ''">
-                                                               <then>
-                                                                  <property name="id" expression="fn:concat('activeCampaign_contactId:', get-property('contactId'))" />
-                                                                  <property name="message" value="Contact has been successfully added to the campaign contact list." />
+                                                                        <property name="updateContactResultCode"
+                                                                                  expression="json-eval($.result_code)"/>
+                                                                        <filter xpath="get-property('listContactsResultCode') > '0'">
+                                                                            <then>
+                                                                                <filter xpath="get-property('listDetails') != ''">
+                                                                                    <then>
+                                                                                        <property name="id"
+                                                                                                  expression="fn:concat('activeCampaign_contactId:', get-property('contactId'))"/>
+                                                                                        <property name="message"
+                                                                                                  value="Contact has been successfully added to the campaign contact list."/>
 
-                                                                  <call-template target="responseHandlerTemplate">
-                                                                     <with-param name="id" value="{$ctx:id}" />
-                                                                     <with-param name="status" value="success" />
-                                                                     <with-param name="activity" value="activeCampaign_updateContact" />
-                                                                     <with-param name="message" value="{$ctx:message}" />
-                                                                  </call-template>
-                                                               </then>
-                                                            </filter>
-                                                         </then>
-                                                         <else>
-                                                            <property name="updateContactError" expression="json-eval($.)" />
-                                                            <property name="id" expression="fn:concat('activeCampaign_contactId:', get-property('contactId'))" />
+                                                                                        <call-template
+                                                                                                target="responseHandlerTemplate">
+                                                                                            <with-param name="id"
+                                                                                                        value="{$ctx:id}"/>
+                                                                                            <with-param name="status"
+                                                                                                        value="success"/>
+                                                                                            <with-param name="activity"
+                                                                                                        value="activeCampaign_updateContact"/>
+                                                                                            <with-param name="message"
+                                                                                                        value="{$ctx:message}"/>
+                                                                                        </call-template>
+                                                                                    </then>
+                                                                                </filter>
+                                                                            </then>
+                                                                            <else>
+                                                                                <property name="updateContactError"
+                                                                                          expression="json-eval($.)"/>
+                                                                                <property name="id"
+                                                                                          expression="fn:concat('activeCampaign_contactId:', get-property('contactId'))"/>
 
-                                                            <call-template target="responseHandlerTemplate">
-                                                               <with-param name="id" value="{$ctx:id}" />
-                                                               <with-param name="status" value="error" />
-                                                               <with-param name="activity" value="activeCampaign_updateContact" />
-                                                               <with-param name="message" value="{$ctx:updateContactError}" />
-                                                            </call-template>
-                                                         </else>
-                                                      </filter>
-                                                   </then>
-                                                   <else>
+                                                                                <call-template
+                                                                                        target="responseHandlerTemplate">
+                                                                                    <with-param name="id"
+                                                                                                value="{$ctx:id}"/>
+                                                                                    <with-param name="status"
+                                                                                                value="error"/>
+                                                                                    <with-param name="activity"
+                                                                                                value="activeCampaign_updateContact"/>
+                                                                                    <with-param name="message"
+                                                                                                value="{$ctx:updateContactError}"/>
+                                                                                </call-template>
+                                                                            </else>
+                                                                        </filter>
+                                                                    </then>
+                                                                    <else>
 
-                                                      <property name="Host" value="host.wso2.com" scope="transport" />
-                                                      <activecampaign.init>
-                                                         <apiUrl>{$ctx:activeCampaign.apiUrl}</apiUrl>
-                                                         <apiKey>{$ctx:activeCampaign.apiKey}</apiKey>
-                                                         <apiOutput>{$ctx:output}</apiOutput>
-                                                      </activecampaign.init>
-                                                      <activecampaign.createContact>
-                                                         <email>{$ctx:contactform.email.value}</email>
-                                                         <firstName>{$ctx:contactform.firstName.value}</firstName>
-                                                         <lastName>{$ctx:contactform.lastName.value}</lastName>
-                                                         <orgName>{$ctx:contactform.company.value}</orgName>
-                                                         <tags>{$ctx:tags}</tags>
-                                                         <listDetails>{$ctx:listDetails}</listDetails>
-                                                      </activecampaign.createContact>
-
-
-                                                      <property name="createContactResultCode" expression="json-eval($.result_code)" />
-                                                      <filter xpath="get-property('createContactResultCode') > '0'">
-                                                         <then>
-                                                            <property name="subscriberId" expression="json-eval($.subscriber_id)" />
-                                                            <property name="id" expression="fn:concat('activeCampaign_contactId:', get-property('subscriberId'))" />
-                                                            <property name="message" expression="fn:concat('Contact has been successfully created for ',get-property('contactform.email.value'),' and added to the campaign contact list.')" />
-
-                                                            <call-template target="responseHandlerTemplate">
-                                                               <with-param name="id" value="{$ctx:id}" />
-                                                               <with-param name="status" value="success" />
-                                                               <with-param name="activity" value="activeCampaign_createContact" />
-                                                               <with-param name="message" value="{$ctx:message}" />
-                                                            </call-template>
-                                                         </then>
-                                                         <else>
-                                                            <property name="createContactError" expression="json-eval($.)" />
-
-                                                            <call-template target="responseHandlerTemplate">
-                                                               <with-param name="id" value="{$ctx:emptyID}" />
-                                                               <with-param name="status" value="error" />
-                                                               <with-param name="activity" value="activeCampaign_createContact" />
-                                                               <with-param name="message" value="{$ctx:createContactError}" />
-                                                            </call-template>
-                                                         </else>
-                                                      </filter>
-
-                                                   </else>
-                                                </filter>
+                                                                        <property name="Host" value="host.wso2.com"
+                                                                                  scope="transport"/>
+                                                                        <activecampaign.init>
+                                                                            <apiUrl>{$ctx:activeCampaign.apiUrl}
+                                                                            </apiUrl>
+                                                                            <apiKey>{$ctx:activeCampaign.apiKey}
+                                                                            </apiKey>
+                                                                            <apiOutput>{$ctx:output}</apiOutput>
+                                                                        </activecampaign.init>
+                                                                        <activecampaign.createContact>
+                                                                            <email>{$ctx:contactform.email.value}
+                                                                            </email>
+                                                                            <firstName>
+                                                                                {$ctx:contactform.firstName.value}
+                                                                            </firstName>
+                                                                            <lastName>
+                                                                                {$ctx:contactform.lastName.value}
+                                                                            </lastName>
+                                                                            <orgName>{$ctx:contactform.company.value}
+                                                                            </orgName>
+                                                                            <tags>{$ctx:tags}</tags>
+                                                                            <listDetails>{$ctx:listDetails}
+                                                                            </listDetails>
+                                                                        </activecampaign.createContact>
 
 
-                                                <property name="submissionIndex" expression="get-property('operation','submissionIndex') + 1" scope="operation" />
-                                                <filter xpath="get-property('operation', 'submissionIndex') = get-property('operation', 'noOfSubmissionIds')">
-                                                   <then>
+                                                                        <property name="createContactResultCode"
+                                                                                  expression="json-eval($.result_code)"/>
+                                                                        <filter xpath="get-property('createContactResultCode') > '0'">
+                                                                            <then>
+                                                                                <property name="subscriberId"
+                                                                                          expression="json-eval($.subscriber_id)"/>
+                                                                                <property name="id"
+                                                                                          expression="fn:concat('activeCampaign_contactId:', get-property('subscriberId'))"/>
+                                                                                <property name="message"
+                                                                                          expression="fn:concat('Contact has been successfully created for ',get-property('contactform.email.value'),' and added to the campaign contact list.')"/>
 
-                                                      <filter xpath="get-property('operation', 'noOfFormContactsExist') = get-property('operation', 'noOfSubmissionIds')">
-                                                         <then>
-                                                            <property name="id" expression="fn:concat('contactForm_formId:', get-property('contactform.formId'))" />
-                                                            <property name="message" value="There are no new contacts to be added to the campaign contact list." />
+                                                                                <call-template
+                                                                                        target="responseHandlerTemplate">
+                                                                                    <with-param name="id"
+                                                                                                value="{$ctx:id}"/>
+                                                                                    <with-param name="status"
+                                                                                                value="success"/>
+                                                                                    <with-param name="activity"
+                                                                                                value="activeCampaign_createContact"/>
+                                                                                    <with-param name="message"
+                                                                                                value="{$ctx:message}"/>
+                                                                                </call-template>
+                                                                            </then>
+                                                                            <else>
+                                                                                <property name="createContactError"
+                                                                                          expression="json-eval($.)"/>
 
-                                                            <call-template target="responseHandlerTemplate">
-                                                               <with-param name="id" value="{$ctx:id}" />
-                                                               <with-param name="status" value="skipped" />
-                                                               <with-param name="activity" value="activeCampaign_createContactFromSubmissions" />
-                                                               <with-param name="message" value="{$ctx:message}" />
-                                                            </call-template>
-                                                         </then>
-                                                      </filter>
-                                                   </then>
-                                                </filter>
-                                             </sequence>
-                                          </target>
-                                       </iterate>
-                                    </then>
-                                 </filter>
-                              </then>
+                                                                                <call-template
+                                                                                        target="responseHandlerTemplate">
+                                                                                    <with-param name="id"
+                                                                                                value="{$ctx:emptyID}"/>
+                                                                                    <with-param name="status"
+                                                                                                value="error"/>
+                                                                                    <with-param name="activity"
+                                                                                                value="activeCampaign_createContact"/>
+                                                                                    <with-param name="message"
+                                                                                                value="{$ctx:createContactError}"/>
+                                                                                </call-template>
+                                                                            </else>
+                                                                        </filter>
 
-                              <else>
-                                 <property name="id" expression="fn:concat('contactForm_formId:', get-property('contactform.formId'))" />
-                                 <property name="getSubmissionsError" expression="json-eval($.)" />
+                                                                    </else>
+                                                                </filter>
 
-                                 <call-template target="responseHandlerTemplate">
-                                    <with-param name="id" value="{$ctx:id}" />
-                                    <with-param name="status" value="error" />
-                                    <with-param name="activity" value="contactForm_getFormSubmissions" />
-                                    <with-param name="message" value="{$ctx:getSubmissionsError}" />
-                                 </call-template>
-                              </else>
-                           </filter>
+
+                                                                <property name="submissionIndex"
+                                                                          expression="get-property('operation','submissionIndex') + 1"
+                                                                          scope="operation"/>
+                                                                <filter xpath="get-property('operation', 'submissionIndex') = get-property('operation', 'noOfSubmissionIds')">
+                                                                    <then>
+
+                                                                        <filter xpath="get-property('operation', 'noOfFormContactsExist') = get-property('operation', 'noOfSubmissionIds')">
+                                                                            <then>
+                                                                                <property name="id"
+                                                                                          expression="fn:concat('contactForm_formId:', get-property('contactform.formId'))"/>
+                                                                                <property name="message"
+                                                                                          value="There are no new contacts to be added to the campaign contact list."/>
+
+                                                                                <call-template
+                                                                                        target="responseHandlerTemplate">
+                                                                                    <with-param name="id"
+                                                                                                value="{$ctx:id}"/>
+                                                                                    <with-param name="status"
+                                                                                                value="skipped"/>
+                                                                                    <with-param name="activity"
+                                                                                                value="activeCampaign_createContactFromSubmissions"/>
+                                                                                    <with-param name="message"
+                                                                                                value="{$ctx:message}"/>
+                                                                                </call-template>
+                                                                            </then>
+                                                                        </filter>
+                                                                    </then>
+                                                                </filter>
+                                                            </sequence>
+                                                        </target>
+                                                    </iterate>
+                                                </then>
+                                            </filter>
+                                        </then>
+
+                                        <else>
+                                            <property name="id"
+                                                      expression="fn:concat('contactForm_formId:', get-property('contactform.formId'))"/>
+                                            <property name="getSubmissionsError" expression="json-eval($.)"/>
+
+                                            <call-template target="responseHandlerTemplate">
+                                                <with-param name="id" value="{$ctx:id}"/>
+                                                <with-param name="status" value="error"/>
+                                                <with-param name="activity" value="contactForm_getFormSubmissions"/>
+                                                <with-param name="message" value="{$ctx:getSubmissionsError}"/>
+                                            </call-template>
+                                        </else>
+                                    </filter>
+                                </then>
+                                <else>
+
+                                    <property name="id"
+                                              expression="fn:concat('contactForm_formId:', get-property('contactform.formId'))"/>
+                                    <property name="getFormFieldsError" expression="json-eval($.)"/>
+
+                                    <call-template target="responseHandlerTemplate">
+                                        <with-param name="id" value="{$ctx:id}"/>
+                                        <with-param name="status" value="error"/>
+                                        <with-param name="activity" value="contactForm_getFields"/>
+                                        <with-param name="message" value="{$ctx:getFormFieldsError}"/>
+                                    </call-template>
+                                </else>
+                            </filter>
                         </then>
-                        <else>
-
-                           <property name="id" expression="fn:concat('contactForm_formId:', get-property('contactform.formId'))" />
-                           <property name="getFormFieldsError" expression="json-eval($.)" />
-
-                           <call-template target="responseHandlerTemplate">
-                              <with-param name="id" value="{$ctx:id}" />
-                              <with-param name="status" value="error" />
-                              <with-param name="activity" value="contactForm_getFields" />
-                              <with-param name="message" value="{$ctx:getFormFieldsError}" />
-                           </call-template>
-                        </else>
-                     </filter>
-                  </then>
-               </filter>
+                    </filter>
 
 
-
-               <filter xpath="get-property('operation', 'submissionIndex') = get-property('operation', 'noOfSubmissionIds')">
-                  <then>
-
-                     <property name="Host" value="host.wso2.com" scope="transport" />
-                     <activecampaign.init>
-                        <apiUrl>{$ctx:activeCampaign.apiUrl}</apiUrl>
-                        <apiKey>{$ctx:activeCampaign.apiKey}</apiKey>
-                        <apiOutput>{$ctx:output}</apiOutput>
-                     </activecampaign.init>
-                     <activecampaign.listCampaigns>
-                        <isFull>{$ctx:activeCampaign.isFull}</isFull>
-                        <nameFilter>{$ctx:activeCampaign.campaignName}</nameFilter>
-                     </activecampaign.listCampaigns>
-
-                     <property name="listCampaignsResultCode" expression="json-eval($.result_code)" />
-                     <filter xpath="get-property('listCampaignsResultCode') > '0'">
+                    <filter xpath="get-property('operation', 'submissionIndex') = get-property('operation', 'noOfSubmissionIds')">
                         <then>
-                           <property name="activeCampaign.campaignId" expression="json-eval($.0.id)" />
-                           <property name="activeCampaign.messageId" expression="json-eval($.0.messages[0].id)" />
-                           <property name="Host" value="host.wso2.com" scope="transport" />
 
-                           <activecampaign.init>
-                              <apiOutput>{$ctx:output}</apiOutput>
-                              <apiUrl>{$ctx:activeCampaign.apiUrl}</apiUrl>
-                              <apiKey>{$ctx:activeCampaign.apiKey}</apiKey>
-                           </activecampaign.init>
-                           <activecampaign.getCampaignClickers>
-                              <campaignId>{$ctx:activeCampaign.campaignId}</campaignId>
-                              <messageId>{$ctx:activeCampaign.messageId}</messageId>
-                           </activecampaign.getCampaignClickers>
+                            <property name="Host" value="host.wso2.com" scope="transport"/>
+                            <activecampaign.init>
+                                <apiUrl>{$ctx:activeCampaign.apiUrl}</apiUrl>
+                                <apiKey>{$ctx:activeCampaign.apiKey}</apiKey>
+                                <apiOutput>{$ctx:output}</apiOutput>
+                            </activecampaign.init>
+                            <activecampaign.listCampaigns>
+                                <isFull>{$ctx:activeCampaign.isFull}</isFull>
+                                <nameFilter>{$ctx:activeCampaign.campaignName}</nameFilter>
+                            </activecampaign.listCampaigns>
 
-                           <property name="getCampaignClickersResultCode" expression="json-eval($.result_code)" />
-                           <filter xpath="get-property('getCampaignClickersResultCode') > '0'">
-                              <then>
-                                 <property name="activeCampaign.clickers" expression="json-eval($.)" />
+                            <property name="listCampaignsResultCode" expression="json-eval($.result_code)"/>
+                            <filter xpath="get-property('listCampaignsResultCode') > '0'">
+                                <then>
+                                    <property name="activeCampaign.campaignId" expression="json-eval($.0.id)"/>
+                                    <property name="activeCampaign.messageId"
+                                              expression="json-eval($.0.messages[0].id)"/>
+                                    <property name="Host" value="host.wso2.com" scope="transport"/>
 
-                                 <script language="js">
-                                    <![CDATA[ 
+                                    <activecampaign.init>
+                                        <apiOutput>{$ctx:output}</apiOutput>
+                                        <apiUrl>{$ctx:activeCampaign.apiUrl}</apiUrl>
+                                        <apiKey>{$ctx:activeCampaign.apiKey}</apiKey>
+                                    </activecampaign.init>
+                                    <activecampaign.getCampaignClickers>
+                                        <campaignId>{$ctx:activeCampaign.campaignId}</campaignId>
+                                        <messageId>{$ctx:activeCampaign.messageId}</messageId>
+                                    </activecampaign.getCampaignClickers>
+
+                                    <property name="getCampaignClickersResultCode"
+                                              expression="json-eval($.result_code)"/>
+                                    <filter xpath="get-property('getCampaignClickersResultCode') > '0'">
+                                        <then>
+                                            <property name="activeCampaign.clickers" expression="json-eval($.)"/>
+
+                                            <script language="js">
+                                                <![CDATA[
                                        var clickersList =  eval("(" + mc.getProperty("activeCampaign.clickers") +")");
                                        var contactExist = 'false';
                                        var payload = {clickers:[]};
@@ -416,41 +489,50 @@
                                     
                                       mc.setPayloadJSON(payload);                   
                                     ]]>
-                                 </script>
+                                            </script>
 
-                                 <property name="noOfClickers" expression="count(//clickers)" scope="operation" />
+                                            <property name="noOfClickers" expression="count(//clickers)"
+                                                      scope="operation"/>
 
-                                 <filter xpath="get-property('operation','noOfClickers') > '0'">
-                                    <then>
-                                       <iterate id="clickerIterator" expression="//clickers" continueParent="true" sequential="true">
-                                          <target>
-                                             <sequence>
+                                            <filter xpath="get-property('operation','noOfClickers') > '0'">
+                                                <then>
+                                                    <iterate id="clickerIterator" expression="//clickers"
+                                                             continueParent="true" sequential="true">
+                                                        <target>
+                                                            <sequence>
 
-                                                <property name="clickerContactId" expression="json-eval($.clickers.subscriberId)" />
-                                                <property name="clickerEmail" expression="json-eval($.clickers.email)" />
+                                                                <property name="clickerContactId"
+                                                                          expression="json-eval($.clickers.subscriberId)"/>
+                                                                <property name="clickerEmail"
+                                                                          expression="json-eval($.clickers.email)"/>
 
 
-                                                <property name="Host" value="host.wso2.com" scope="transport" />
+                                                                <property name="Host" value="host.wso2.com"
+                                                                          scope="transport"/>
 
-                                                <activecampaign.init>
-                                                   <apiOutput>{$ctx:output}</apiOutput>
-                                                   <apiUrl>{$ctx:activeCampaign.apiUrl}</apiUrl>
-                                                   <apiKey>{$ctx:activeCampaign.apiKey}</apiKey>
-                                                </activecampaign.init>
-                                                <activecampaign.listContacts>
-                                                   <emailFilter>{$ctx:clickerEmail}</emailFilter>
-                                                   <isFull>1</isFull>
-                                                </activecampaign.listContacts>
+                                                                <activecampaign.init>
+                                                                    <apiOutput>{$ctx:output}</apiOutput>
+                                                                    <apiUrl>{$ctx:activeCampaign.apiUrl}</apiUrl>
+                                                                    <apiKey>{$ctx:activeCampaign.apiKey}</apiKey>
+                                                                </activecampaign.init>
+                                                                <activecampaign.listContacts>
+                                                                    <emailFilter>{$ctx:clickerEmail}</emailFilter>
+                                                                    <isFull>1</isFull>
+                                                                </activecampaign.listContacts>
 
-                                                <property name="listContactsCode" expression="json-eval($.result_code)" />
-                                                <filter xpath="get-property('listContactsCode') > '0'">
-                                                   <then>
-                                                      <property name="clickerListLists" expression="json-eval($.0.listslist)" />
-                                                      <property name="clickerExistingContactListId" expression="json-eval($.0.listid)" />
-                                                      <property name="clickerOrgName" expression="json-eval($.0.orgname)" />
+                                                                <property name="listContactsCode"
+                                                                          expression="json-eval($.result_code)"/>
+                                                                <filter xpath="get-property('listContactsCode') > '0'">
+                                                                    <then>
+                                                                        <property name="clickerListLists"
+                                                                                  expression="json-eval($.0.listslist)"/>
+                                                                        <property name="clickerExistingContactListId"
+                                                                                  expression="json-eval($.0.listid)"/>
+                                                                        <property name="clickerOrgName"
+                                                                                  expression="json-eval($.0.orgname)"/>
 
-                                                      <script language="js">
-                                                         <![CDATA[  
+                                                                        <script language="js">
+                                                                            <![CDATA[
                                                             var campaignList =  "" + mc.getProperty("activeCampaign.listId") ;     
                                                             var clickerListLists =  "" +  mc.getProperty("clickerListLists") ;
                                                             var clickerExistingContactListId =   mc.getProperty("clickerExistingContactListId") ;
@@ -468,11 +550,12 @@
                                                             }                                                                               
                                                                                                                                                     
                                                          ]]>
-                                                      </script>
-                                                      <filter source="get-property('inList') = 'true'" regex="false">
-                                                         <then>
-                                                            <script language="js">
-                                                               <![CDATA[
+                                                                        </script>
+                                                                        <filter source="get-property('inList') = 'true'"
+                                                                                regex="false">
+                                                                            <then>
+                                                                                <script language="js">
+                                                                                    <![CDATA[
                                                                   var listId = mc.getProperty('activeCampaign.listId');
                                                                   var payload = {};
                                                                   var listKey = 'p['+listId+']';
@@ -481,149 +564,196 @@
                                                                   payload[statusKey] = 1;
                                                                   mc.setPayloadJSON(payload);
                                                                ]]>
-                                                            </script>
-                                                            <property name="clickerListDetails" expression="json-eval($.)" />
-                                                            <property name="uri.var.firstName" action="remove" />
-                                                            <property name="uri.var.lastName" action="remove" />
-                                                            <property name="uri.var.tags" action="remove" />
-                                                            <property name="Host" value="host.wso2.com" scope="transport" />
-                                                            <activecampaign.init>
-                                                               <apiOutput>{$ctx:output}</apiOutput>
-                                                               <apiUrl>{$ctx:activeCampaign.apiUrl}</apiUrl>
-                                                               <apiKey>{$ctx:activeCampaign.apiKey}</apiKey>
-                                                            </activecampaign.init>
-                                                            <activecampaign.updateContact>
-                                                               <contactId>{$ctx:clickerContactId}</contactId>
-                                                               <email>{$ctx:clickerEmail}</email>
-                                                               <orgName>{$ctx:clickerOrgName}</orgName>
-                                                               <listDetails>{$ctx:clickerListDetails}</listDetails>
-                                                            </activecampaign.updateContact>
+                                                                                </script>
+                                                                                <property name="clickerListDetails"
+                                                                                          expression="json-eval($.)"/>
+                                                                                <property name="uri.var.firstName"
+                                                                                          action="remove"/>
+                                                                                <property name="uri.var.lastName"
+                                                                                          action="remove"/>
+                                                                                <property name="uri.var.tags"
+                                                                                          action="remove"/>
+                                                                                <property name="Host"
+                                                                                          value="host.wso2.com"
+                                                                                          scope="transport"/>
+                                                                                <activecampaign.init>
+                                                                                    <apiOutput>{$ctx:output}</apiOutput>
+                                                                                    <apiUrl>
+                                                                                        {$ctx:activeCampaign.apiUrl}
+                                                                                    </apiUrl>
+                                                                                    <apiKey>
+                                                                                        {$ctx:activeCampaign.apiKey}
+                                                                                    </apiKey>
+                                                                                </activecampaign.init>
+                                                                                <activecampaign.updateContact>
+                                                                                    <contactId>{$ctx:clickerContactId}
+                                                                                    </contactId>
+                                                                                    <email>{$ctx:clickerEmail}</email>
+                                                                                    <orgName>{$ctx:clickerOrgName}
+                                                                                    </orgName>
+                                                                                    <listDetails>
+                                                                                        {$ctx:clickerListDetails}
+                                                                                    </listDetails>
+                                                                                </activecampaign.updateContact>
 
-                                                            <property name="updateContactListResultCode" expression="json-eval($.result_code)" />
-                                                            <filter xpath="get-property('updateContactListResultCode') > '0'">
-                                                               <then>
-                                                                  <property name="id" expression="fn:concat('activeCampaign_contactId:', get-property('clickerContactId'))" />
-                                                                  <property name="message" value="Contact has been successfully added to the campaign contact list." />
+                                                                                <property
+                                                                                        name="updateContactListResultCode"
+                                                                                        expression="json-eval($.result_code)"/>
+                                                                                <filter xpath="get-property('updateContactListResultCode') > '0'">
+                                                                                    <then>
+                                                                                        <property name="id"
+                                                                                                  expression="fn:concat('activeCampaign_contactId:', get-property('clickerContactId'))"/>
+                                                                                        <property name="message"
+                                                                                                  value="Contact has been successfully added to the campaign contact list."/>
 
-                                                                  <call-template target="responseHandlerTemplate">
-                                                                     <with-param name="id" value="{$ctx:id}" />
-                                                                     <with-param name="status" value="success" />
-                                                                     <with-param name="activity" value="activeCampaign_updateContact" />
-                                                                     <with-param name="message" value="{$ctx:message}" />
-                                                                  </call-template>
-                                                               </then>
-                                                               <else>
-                                                                  <property name="id" expression="fn:concat('activeCampaign_contactId:', get-property('clickerContactId'))" />
-                                                                  <property name="updateContactListError" expression="json-eval($.)" />
+                                                                                        <call-template
+                                                                                                target="responseHandlerTemplate">
+                                                                                            <with-param name="id"
+                                                                                                        value="{$ctx:id}"/>
+                                                                                            <with-param name="status"
+                                                                                                        value="success"/>
+                                                                                            <with-param name="activity"
+                                                                                                        value="activeCampaign_updateContact"/>
+                                                                                            <with-param name="message"
+                                                                                                        value="{$ctx:message}"/>
+                                                                                        </call-template>
+                                                                                    </then>
+                                                                                    <else>
+                                                                                        <property name="id"
+                                                                                                  expression="fn:concat('activeCampaign_contactId:', get-property('clickerContactId'))"/>
+                                                                                        <property
+                                                                                                name="updateContactListError"
+                                                                                                expression="json-eval($.)"/>
 
-                                                                  <call-template target="responseHandlerTemplate">
-                                                                     <with-param name="id" value="{$ctx:id}" />
-                                                                     <with-param name="status" value="error" />
-                                                                     <with-param name="activity" value="activeCampaign_updateContact" />
-                                                                     <with-param name="message" value="{$ctx:updateContactListError}" />
-                                                                  </call-template>
-                                                               </else>
-                                                            </filter>
-                                                         </then>
-                                                         <else>
-                                                            <property name="noOfContactsExist" expression="get-property('operation','noOfContactsExist') + 1" scope="operation" />
-                                                         </else>
+                                                                                        <call-template
+                                                                                                target="responseHandlerTemplate">
+                                                                                            <with-param name="id"
+                                                                                                        value="{$ctx:id}"/>
+                                                                                            <with-param name="status"
+                                                                                                        value="error"/>
+                                                                                            <with-param name="activity"
+                                                                                                        value="activeCampaign_updateContact"/>
+                                                                                            <with-param name="message"
+                                                                                                        value="{$ctx:updateContactListError}"/>
+                                                                                        </call-template>
+                                                                                    </else>
+                                                                                </filter>
+                                                                            </then>
+                                                                            <else>
+                                                                                <property name="noOfContactsExist"
+                                                                                          expression="get-property('operation','noOfContactsExist') + 1"
+                                                                                          scope="operation"/>
+                                                                            </else>
 
-                                                      </filter>
-                                                   </then>
-                                                </filter>
-                                                <property name="clickerIndex" expression="get-property('operation','clickerIndex') + 1" scope="operation" />
-                                                <filter xpath="get-property('operation', 'clickerIndex') = get-property('operation', 'noOfClickers')">
-                                                   <then>
-                                                      <filter xpath="get-property('operation', 'noOfContactsExist') = get-property('operation', 'noOfClickers')">
-                                                         <then>
-                                                            <property name="message" value="There are no new contacts to be added to the campaign contact list." />
-                                                            <property name="id" expression="fn:concat('activeCampaign_campaignId:',get-property('activeCampaign.campaignId'),',message_id:',get-property('activeCampaign.messageId')) " />
+                                                                        </filter>
+                                                                    </then>
+                                                                </filter>
+                                                                <property name="clickerIndex"
+                                                                          expression="get-property('operation','clickerIndex') + 1"
+                                                                          scope="operation"/>
+                                                                <filter xpath="get-property('operation', 'clickerIndex') = get-property('operation', 'noOfClickers')">
+                                                                    <then>
+                                                                        <filter xpath="get-property('operation', 'noOfContactsExist') = get-property('operation', 'noOfClickers')">
+                                                                            <then>
+                                                                                <property name="message"
+                                                                                          value="There are no new contacts to be added to the campaign contact list."/>
+                                                                                <property name="id"
+                                                                                          expression="fn:concat('activeCampaign_campaignId:',get-property('activeCampaign.campaignId'),',message_id:',get-property('activeCampaign.messageId')) "/>
 
-                                                            <call-template target="responseHandlerTemplate">
-                                                               <with-param name="id" value="{$ctx:id}" />
-                                                               <with-param name="status" value="skipped" />
-                                                               <with-param name="activity" value="activeCampaign_updateContactFromClickers" />
-                                                               <with-param name="message" value="{$ctx:message}" />
-                                                            </call-template>
-                                                         </then>
-                                                      </filter>
-                                                      <loopback />
-                                                   </then>
-                                                </filter>
-                                             </sequence>
-                                          </target>
-                                       </iterate>
-                                    </then>
-                                    <else>
-                                       <property name="getCampaignClickersError" expression="json-eval($.result_message)" />
-                                       <property name="message" value="Clickers have not been found for the campaign." />
-                                       <property name="id" expression="fn:concat('activeCampaign_campaignId:',get-property('activeCampaign.campaignId'),',message_id:',get-property('activeCampaign.messageId')) " />
+                                                                                <call-template
+                                                                                        target="responseHandlerTemplate">
+                                                                                    <with-param name="id"
+                                                                                                value="{$ctx:id}"/>
+                                                                                    <with-param name="status"
+                                                                                                value="skipped"/>
+                                                                                    <with-param name="activity"
+                                                                                                value="activeCampaign_updateContactFromClickers"/>
+                                                                                    <with-param name="message"
+                                                                                                value="{$ctx:message}"/>
+                                                                                </call-template>
+                                                                            </then>
+                                                                        </filter>
+                                                                        <loopback/>
+                                                                    </then>
+                                                                </filter>
+                                                            </sequence>
+                                                        </target>
+                                                    </iterate>
+                                                </then>
+                                                <else>
+                                                    <property name="getCampaignClickersError"
+                                                              expression="json-eval($.result_message)"/>
+                                                    <property name="message"
+                                                              value="Clickers have not been found for the campaign."/>
+                                                    <property name="id"
+                                                              expression="fn:concat('activeCampaign_campaignId:',get-property('activeCampaign.campaignId'),',message_id:',get-property('activeCampaign.messageId')) "/>
 
-                                       <call-template target="responseHandlerTemplate">
-                                          <with-param name="id" value="{$ctx:id}" />
-                                          <with-param name="status" value="skipped" />
-                                          <with-param name="activity" value="activeCampaign_getCampaignClickers" />
-                                          <with-param name="message" value="{$ctx:message}" />
-                                       </call-template>
-                                       <loopback />
-                                    </else>
-                                 </filter>
-                              </then>
-                              <else>
-                                 <property name="getCampaignClickersError" expression="json-eval($.)" />
-                                 <property name="id" expression="fn:concat('activeCampaign_campaignId:',get-property('activeCampaign.campaignId'),',message_id:',get-property('activeCampaign.messageId')) " />
+                                                    <call-template target="responseHandlerTemplate">
+                                                        <with-param name="id" value="{$ctx:id}"/>
+                                                        <with-param name="status" value="skipped"/>
+                                                        <with-param name="activity"
+                                                                    value="activeCampaign_getCampaignClickers"/>
+                                                        <with-param name="message" value="{$ctx:message}"/>
+                                                    </call-template>
+                                                    <loopback/>
+                                                </else>
+                                            </filter>
+                                        </then>
+                                        <else>
+                                            <property name="getCampaignClickersError" expression="json-eval($.)"/>
+                                            <property name="id"
+                                                      expression="fn:concat('activeCampaign_campaignId:',get-property('activeCampaign.campaignId'),',message_id:',get-property('activeCampaign.messageId')) "/>
 
-                                 <call-template target="responseHandlerTemplate">
-                                    <with-param name="id" value="{$ctx:id}" />
-                                    <with-param name="status" value="error" />
-                                    <with-param name="activity" value="activeCampaign_getCampaignClickers" />
-                                    <with-param name="message" value="{$ctx:getCampaignClickersError}" />
-                                 </call-template>
-                                 <loopback />
-                              </else>
-                           </filter>
+                                            <call-template target="responseHandlerTemplate">
+                                                <with-param name="id" value="{$ctx:id}"/>
+                                                <with-param name="status" value="error"/>
+                                                <with-param name="activity" value="activeCampaign_getCampaignClickers"/>
+                                                <with-param name="message" value="{$ctx:getCampaignClickersError}"/>
+                                            </call-template>
+                                            <loopback/>
+                                        </else>
+                                    </filter>
+                                </then>
+                                <else>
+                                    <property name="listCampaignsError" expression="json-eval($.)"/>
+
+                                    <call-template target="responseHandlerTemplate">
+                                        <with-param name="id" value="{$ctx:emptyID}"/>
+                                        <with-param name="status" value="error"/>
+                                        <with-param name="activity" value="activeCampaign_listCampaigns"/>
+                                        <with-param name="message" value="{$ctx:listCampaignsError}"/>
+                                    </call-template>
+                                    <loopback/>
+                                </else>
+                            </filter>
                         </then>
-                        <else>
-                           <property name="listCampaignsError" expression="json-eval($.)" />
+                    </filter>
+                </then>
+                <else>
+                    <property name="listMailingListsError" expression="json-eval($.)"/>
 
-                           <call-template target="responseHandlerTemplate">
-                              <with-param name="id" value="{$ctx:emptyID}" />
-                              <with-param name="status" value="error" />
-                              <with-param name="activity" value="activeCampaign_listCampaigns" />
-                              <with-param name="message" value="{$ctx:listCampaignsError}" />
-                           </call-template>
-                           <loopback />
-                        </else>
-                     </filter>
-                  </then>
-               </filter>
-            </then>
-            <else>
-               <property name="listMailingListsError" expression="json-eval($.)" />
+                    <call-template target="responseHandlerTemplate">
+                        <with-param name="id" value="{$ctx:emptyID}"/>
+                        <with-param name="status" value="error"/>
+                        <with-param name="activity" value="activeCampaign_listMailingLists"/>
+                        <with-param name="message" value="{$ctx:listMailingListsError}"/>
+                    </call-template>
+                    <loopback/>
+                </else>
+            </filter>
+        </inSequence>
+        <outSequence>
 
-               <call-template target="responseHandlerTemplate">
-                  <with-param name="id" value="{$ctx:emptyID}" />
-                  <with-param name="status" value="error" />
-                  <with-param name="activity" value="activeCampaign_listMailingLists" />
-                  <with-param name="message" value="{$ctx:listMailingListsError}" />
-               </call-template>
-               <loopback />
-            </else>
-         </filter>
-      </inSequence>
-      <outSequence>
-
-         <payloadFactory media-type="json">
-            <format>{ "Response":{ "process":"hubSpot_addContactsToContactList", "activityResponse":[$1] } }
-            </format>
-            <args>
-               <arg expression="get-property('operation','responseString')" />
-            </args>
-         </payloadFactory>
-         <property name="messageType" value="application/json" scope="axis2" />
-         <send />
-      </outSequence>
-   </target>
-   <description />
+            <payloadFactory media-type="json">
+                <format>{ "Response":{ "process":"hubSpot_addContactsToContactList", "activityResponse":[$1] } }
+                </format>
+                <args>
+                    <arg expression="get-property('operation','responseString')"/>
+                </args>
+            </payloadFactory>
+            <property name="messageType" value="application/json" scope="axis2"/>
+            <send/>
+        </outSequence>
+    </target>
+    <description/>
 </proxy>
