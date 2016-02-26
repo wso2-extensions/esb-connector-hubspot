@@ -50,7 +50,7 @@ public class HubspotConnectorIntegrationTest extends ConnectorIntegrationTestBas
    @BeforeClass(alwaysRun = true)
    public void setEnvironment() throws Exception {
    
-      init("hubspot-connector-1.0.0");
+      init("hubspot-connector-1.0.1-SNAPSHOT");
       
       esbRequestHeadersMap = new HashMap<String, String>();
       apiRequestHeadersMap = new HashMap<String, String>();
