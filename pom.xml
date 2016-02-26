@@ -24,11 +24,11 @@
     <groupId>org.wso2.carbon.connector</groupId>
     <artifactId>org.wso2.carbon.connector.hubspot</artifactId>
     <packaging>jar</packaging>
-    <version>1.0.0</version>
+    <version>1.0.0-SNAPSHOT</version>
     <name>WSO2 Carbon - Mediation Library Connector For Hubspot</name>
     <url>http://wso2.org</url>
     <properties>
-        <connector.name>hubspot</connector.name>>
+        <connector.name>hubspot</connector.name>
         <test.framework.version>4.2.0</test.framework.version>
         <esb.version>4.9.0</esb.version>
         <carbon.kernel.version>4.4.1</carbon.kernel.version>
