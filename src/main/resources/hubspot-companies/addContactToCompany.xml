@@ -23,6 +23,7 @@
     <sequence>
         <property name="uri.var.companyId" expression="$func:companyId"/>
         <property name="uri.var.contactVId" expression="$func:contactVId"/>
+        <property name="DISABLE_CHUNKING" value="true" scope="axis2"/>
         <call>
             <endpoint>
                 <http method="put"

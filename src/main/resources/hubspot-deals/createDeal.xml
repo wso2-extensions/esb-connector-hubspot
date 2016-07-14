@@ -79,6 +79,7 @@
          mc.setPayloadJSON(payload);
       ]]>
         </script>
+        <property name="DISABLE_CHUNKING" value="true" scope="axis2"/>
         <call>
             <endpoint>
                 <http method="post" uri-template="{uri.var.apiUrl}/deals/v1/deal{+uri.var.apiKey}{+uri.var.urlQuery}"/>

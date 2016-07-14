@@ -21,6 +21,7 @@
     <parameter name="companyId" description="The Id of the company to be retrieved."/>
     <sequence>
         <property name="uri.var.companyId" expression="$func:companyId"/>
+        <property name="DISABLE_CHUNKING" value="true" scope="axis2"/>
         <call>
             <endpoint>
                 <http method="get"

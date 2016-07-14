@@ -16,22 +16,20 @@ Tested Platform:
 
 Steps to follow in setting integration test.
 
- 1. Download ESB WSO2 ESB 4.9.0.
- 
- 2. Deploy relevant patches, if applicable.
+ 1. Download ESB 5.0.0-SNAPSHOT from official website. Extract the ESB and put "-XX:-UseSplitVerifier" under $JVM_MEM_OPTS into {ESB_HOME}/bin/wso2server.sh.
 
- 3. Create a Hubspot free sales account and login using "http://www.hubspot.com/crm".
+ 2. Create a Hubspot free sales account and login using "http://www.hubspot.com/crm".
    i) Click on the user avatar on the top right corner and from the top down select the 'Integration' option.
    ii) On the Integrations page, select the option "Get your HubSpot API Key" and generate the API key for further use. 
 
- 4. Once login to the application navigate to "https://app.hubspot.com" and extract the certificate from root using browser and place the certificate file in following location. 
+ 3. Once login to the application navigate to "https://app.hubspot.com" and extract the certificate from root using browser and place the certificate file in following location.
 
    i) "<HUBSPOT_HOME>/src/test/resources/keystores/products"
 
       Navigate to the above location from command prompt and execute 'keytool -importcert -file CERT_FILE_NAME -keystore wso2carbon.jks -alias "hubspot"' in command line to import Hubspot certificate in to keystore. Give "wso2carbon" as password.
       NOTE : CERT_FILE_NAME is the file name which was extracted from Hubspot with  the extension, change it accordingly. Remove the copied certificate.
  
- 5. Compress ESB as wso2esb-4.9.0.zip and copy that zip file in to location "{HUBSPOT_HOME}/repository/".
+ 4. Compress ESB as wso2esb-5.0.0-SNAPSHOT.zip and copy that zip file in to location "{HUBSPOT_HOME}/repository/".
 
  6. Update the hubspot properties file at location "<HUBSPOT_HOME>/src/test/resources/artifacts/ESB/connector/config" as below.
       

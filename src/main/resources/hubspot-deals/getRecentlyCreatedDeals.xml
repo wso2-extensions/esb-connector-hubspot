@@ -35,6 +35,7 @@
                           expression="fn:concat(get-property('uri.var.urlQuery'),'&amp;count=', get-property('uri.var.count'))"/>
             </then>
         </filter>
+        <property name="DISABLE_CHUNKING" value="true" scope="axis2"/>
         <call>
             <endpoint>
                 <http method="get"

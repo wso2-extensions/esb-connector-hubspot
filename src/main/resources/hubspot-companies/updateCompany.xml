@@ -33,6 +33,7 @@
                 <arg expression="get-property('uri.var.properties')"/>
             </args>
         </payloadFactory>
+        <property name="DISABLE_CHUNKING" value="true" scope="axis2"/>
         <call>
             <endpoint>
                 <http method="put"

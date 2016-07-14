@@ -18,10 +18,6 @@
 
 package org.wso2.carbon.connector.integration.test.hubspot;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.testng.Assert;
@@ -29,6 +25,10 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import org.wso2.connector.integration.test.base.ConnectorIntegrationTestBase;
 import org.wso2.connector.integration.test.base.RestResponse;
+
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 public class HubspotConnectorIntegrationTest extends ConnectorIntegrationTestBase {
    
@@ -50,7 +50,7 @@ public class HubspotConnectorIntegrationTest extends ConnectorIntegrationTestBas
    @BeforeClass(alwaysRun = true)
    public void setEnvironment() throws Exception {
    
-      init("hubspot-connector-1.0.1-SNAPSHOT");
+      init("hubspot-connector-1.0.1");
       
       esbRequestHeadersMap = new HashMap<String, String>();
       apiRequestHeadersMap = new HashMap<String, String>();

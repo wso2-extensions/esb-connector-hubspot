@@ -57,6 +57,7 @@
                 </payloadFactory>
             </else>
         </filter>
+        <property name="DISABLE_CHUNKING" value="true" scope="axis2"/>
         <call>
             <endpoint>
                 <http method="put"
