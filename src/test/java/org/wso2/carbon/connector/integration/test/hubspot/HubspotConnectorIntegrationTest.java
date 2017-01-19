@@ -123,7 +123,6 @@ public class HubspotConnectorIntegrationTest extends ConnectorIntegrationTestBas
     */
    @Test(priority = 1, groups = { "wso2.esb" }, description = "hubspot {createContact} integration test with mandatory parameters.")
    public void testCreateContactWithMandatoryParameters() throws IOException, JSONException {
-   
       esbRequestHeadersMap.put("Action", "urn:createContact");
       RestResponse<JSONObject> esbRestResponse =
             sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_createContact_mandatory.json");
@@ -136,7 +135,6 @@ public class HubspotConnectorIntegrationTest extends ConnectorIntegrationTestBas
       
       Assert.assertEquals(connectorProperties.getProperty("emailMandatory"),
             apiRestResponse.getBody().getJSONObject("properties").getJSONObject("email").getString("value"));
-      
    }
    
    /**
@@ -149,7 +147,6 @@ public class HubspotConnectorIntegrationTest extends ConnectorIntegrationTestBas
     */
    @Test(priority = 1, groups = { "wso2.esb" }, description = "hubspot {createContact} integration test with optional parameters.")
    public void testCreateContactWithOptionalParameters() throws IOException, JSONException {
-   
       esbRequestHeadersMap.put("Action", "urn:createContact");
       RestResponse<JSONObject> esbRestResponse =
             sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_createContact_optional.json");
@@ -171,7 +168,6 @@ public class HubspotConnectorIntegrationTest extends ConnectorIntegrationTestBas
             apiRestResponse.getBody().getJSONObject("properties").getJSONObject("phone").getString("value"));
       Assert.assertEquals(connectorProperties.getProperty("contactPhone"),
             apiRestResponse.getBody().getJSONObject("properties").getJSONObject("address").getString("value"));
-      
    }
    
    /**
@@ -184,7 +180,6 @@ public class HubspotConnectorIntegrationTest extends ConnectorIntegrationTestBas
     */
    @Test(priority = 1, groups = { "wso2.esb" }, dependsOnMethods = { "testCreateContactWithOptionalParameters" }, description = "hubspot {createContact} integration test with negative case.")
    public void testCreateContactWithNegativeCase() throws IOException, JSONException {
-   
       esbRequestHeadersMap.put("Action", "urn:createContact");
       RestResponse<JSONObject> esbRestResponse =
             sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_createContact_negative.json");
@@ -211,7 +206,6 @@ public class HubspotConnectorIntegrationTest extends ConnectorIntegrationTestBas
     */
    @Test(priority = 1, groups = { "wso2.esb" }, dependsOnMethods = { "testCreateContactWithOptionalParameters" }, description = "hubspot {getContactById} integration test with mandatory parameters.")
    public void testGetContactByIdMandatoryParameters() throws IOException, JSONException {
-   
       esbRequestHeadersMap.put("Action", "urn:getContactById");
       RestResponse<JSONObject> esbRestResponse =
             sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_getContactById_mandatory.json");
@@ -239,7 +233,6 @@ public class HubspotConnectorIntegrationTest extends ConnectorIntegrationTestBas
       Assert.assertEquals(
             esbRestResponse.getBody().getJSONObject("properties").getJSONObject("address").getString("value"),
             apiRestResponse.getBody().getJSONObject("properties").getJSONObject("address").getString("value"));
-      
    }
    
    /**
@@ -252,7 +245,6 @@ public class HubspotConnectorIntegrationTest extends ConnectorIntegrationTestBas
     */
    @Test(priority = 1, groups = { "wso2.esb" }, dependsOnMethods = { "testCreateContactWithOptionalParameters" }, description = "hubspot {getContactById} integration test with optional parameters.")
    public void testGetContactByIdOptionalParameters() throws IOException, JSONException {
-   
       esbRequestHeadersMap.put("Action", "urn:getContactById");
       RestResponse<JSONObject> esbRestResponse =
             sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_getContactById_optional.json");
@@ -279,7 +271,6 @@ public class HubspotConnectorIntegrationTest extends ConnectorIntegrationTestBas
             .has("versions"));
       Assert.assertTrue(esbRestResponse.getBody().getJSONObject("properties").getJSONObject("lastname").has("versions"));
       Assert.assertTrue(apiRestResponse.getBody().getJSONObject("properties").getJSONObject("lastname").has("versions"));
-      
    }
    
    /**
@@ -292,7 +283,6 @@ public class HubspotConnectorIntegrationTest extends ConnectorIntegrationTestBas
     */
    @Test(priority = 1, groups = { "wso2.esb" }, dependsOnMethods = { "testCreateContactWithOptionalParameters" }, description = "hubspot {getContactById} integration test with negative case.")
    public void testGetContactByIdWithNegativeCase() throws IOException, JSONException {
-   
       esbRequestHeadersMap.put("Action", "urn:getContactById");
       RestResponse<JSONObject> esbRestResponse =
             sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_getContactById_negative.json");
@@ -320,7 +310,6 @@ public class HubspotConnectorIntegrationTest extends ConnectorIntegrationTestBas
    @Test(priority = 1, groups = { "wso2.esb" }, dependsOnMethods = { "testCreateContactWithMandatoryParameters",
          "testCreateContactWithOptionalParameters" }, description = "hubspot {listContacts} integration test with mandatory parameters.")
    public void testListContactsWithMandatoryParameters() throws IOException, JSONException {
-   
       esbRequestHeadersMap.put("Action", "urn:listContacts");
       RestResponse<JSONObject> esbRestResponse =
             sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_listContacts_mandatory.json");
@@ -340,7 +329,6 @@ public class HubspotConnectorIntegrationTest extends ConnectorIntegrationTestBas
             apiRestResponse.getBody().getString("has-more"));
       Assert.assertEquals(esbRestResponse.getBody().getString("vid-offset"),
             apiRestResponse.getBody().getString("vid-offset"));
-      
    }
    
    /**
@@ -354,7 +342,6 @@ public class HubspotConnectorIntegrationTest extends ConnectorIntegrationTestBas
    @Test(priority = 1, groups = { "wso2.esb" }, dependsOnMethods = { "testCreateContactWithMandatoryParameters",
          "testCreateContactWithOptionalParameters" }, description = "hubspot {listContacts} integration test with optional parameters.")
    public void testListContactsWithOptionalParameters() throws IOException, JSONException {
-   
       esbRequestHeadersMap.put("Action", "urn:listContacts");
       RestResponse<JSONObject> esbRestResponse =
             sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_listContacts_optional.json");
@@ -380,7 +367,6 @@ public class HubspotConnectorIntegrationTest extends ConnectorIntegrationTestBas
             .getJSONObject("email").has("versions"));
       Assert.assertTrue(apiRestResponse.getBody().getJSONArray("contacts").getJSONObject(0).getJSONObject("properties")
             .getJSONObject("email").has("versions"));
-      
    }
    
    /**
@@ -393,7 +379,6 @@ public class HubspotConnectorIntegrationTest extends ConnectorIntegrationTestBas
     */
    @Test(priority = 1, groups = { "wso2.esb" }, dependsOnMethods = { "testCreateContactWithOptionalParameters" }, description = "hubspot {listContacts} integration test with negative case.")
    public void testListContactsWithNegativeCase() throws IOException, JSONException {
-   
       esbRequestHeadersMap.put("Action", "urn:listContacts");
       RestResponse<JSONObject> esbRestResponse =
             sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_listContacts_negative.json");
@@ -426,7 +411,6 @@ public class HubspotConnectorIntegrationTest extends ConnectorIntegrationTestBas
     */
    @Test(priority = 1, groups = { "wso2.esb" }, dependsOnMethods = { "testCreateContactWithMandatoryParameters" }, description = "hubspot {updateContact} integration test with optional parameters.")
    public void testUpdateContactWithOptionalParameters() throws IOException, JSONException {
-   
       esbRequestHeadersMap.put("Action", "urn:updateContact");
       
       final String apiEndpoint =
@@ -450,7 +434,6 @@ public class HubspotConnectorIntegrationTest extends ConnectorIntegrationTestBas
             apiRestResponse.getBody().getJSONObject("properties").getJSONObject("firstname").getString("value"));
       Assert.assertEquals(connectorProperties.getProperty("contactLastName"),
             apiRestResponse.getBody().getJSONObject("properties").getJSONObject("lastname").getString("value"));
-      
    }
    
    /**
@@ -463,7 +446,6 @@ public class HubspotConnectorIntegrationTest extends ConnectorIntegrationTestBas
     */
    @Test(priority = 1, groups = { "wso2.esb" }, dependsOnMethods = { "testCreateContactWithOptionalParameters" }, description = "hubspot {updateContact} integration test with negative case.")
    public void testUpdateContactWithNegativeCase() throws IOException, JSONException {
-   
       esbRequestHeadersMap.put("Action", "urn:updateContact");
       RestResponse<JSONObject> esbRestResponse =
             sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_updateContact_negative.json");
@@ -497,7 +479,6 @@ public class HubspotConnectorIntegrationTest extends ConnectorIntegrationTestBas
     */
    @Test(priority = 1, groups = { "wso2.esb" }, description = "hubspot {createCompany} integration test with optional parameters.")
    public void testCreateCompanyWithOptionalParameters() throws IOException, JSONException {
-   
       esbRequestHeadersMap.put("Action", "urn:createCompany");
       RestResponse<JSONObject> esbRestResponse =
             sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_createCompany_optional.json");
@@ -517,7 +498,6 @@ public class HubspotConnectorIntegrationTest extends ConnectorIntegrationTestBas
             apiRestResponse.getBody().getJSONObject("properties").getJSONObject("city").getString("value"));
       Assert.assertEquals(connectorProperties.getProperty("companyWebsite"),
             apiRestResponse.getBody().getJSONObject("properties").getJSONObject("website").getString("value"));
-      
    }
    
    /**
@@ -530,7 +510,6 @@ public class HubspotConnectorIntegrationTest extends ConnectorIntegrationTestBas
     */
    @Test(priority = 1, groups = { "wso2.esb" }, description = "hubspot {createCompany} integration test with negative case.")
    public void testCreateCompanyWithNegativeCase() throws IOException, JSONException {
-   
       esbRequestHeadersMap.put("Action", "urn:createCompany");
       RestResponse<JSONObject> esbRestResponse =
             sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_createCompany_negative.json");
@@ -544,7 +523,6 @@ public class HubspotConnectorIntegrationTest extends ConnectorIntegrationTestBas
       Assert.assertEquals(esbRestResponse.getBody().getString("message"), apiRestResponse.getBody()
             .getString("message"));
       Assert.assertEquals(esbRestResponse.getBody().getString("status"), apiRestResponse.getBody().getString("status"));
-      
    }
    
    /**
@@ -563,7 +541,6 @@ public class HubspotConnectorIntegrationTest extends ConnectorIntegrationTestBas
     */
    @Test(priority = 1, groups = { "wso2.esb" }, dependsOnMethods = { "testCreateCompanyWithOptionalParameters" }, description = "hubspot {updateCompany} integration test with optional parameters.")
    public void testUpdateCompanyWithOptionalParameters() throws IOException, JSONException {
-   
       esbRequestHeadersMap.put("Action", "urn:updateCompany");
       
       final String apiEndpoint =
@@ -593,7 +570,6 @@ public class HubspotConnectorIntegrationTest extends ConnectorIntegrationTestBas
       Assert.assertTrue(apiRestResponse.getBody().getJSONObject("properties").has("address"));
       Assert.assertTrue(apiRestResponse.getBody().getJSONObject("properties").has("timezone"));
       Assert.assertTrue(apiRestResponse.getBody().getJSONObject("properties").has("founded_year"));
-      
    }
    
    /**
@@ -606,7 +582,6 @@ public class HubspotConnectorIntegrationTest extends ConnectorIntegrationTestBas
     */
    @Test(priority = 1, groups = { "wso2.esb" }, dependsOnMethods = { "testUpdateCompanyWithOptionalParameters" }, description = "hubspot {updateCompany} integration test with negative case.")
    public void testUpdateCompanyWithNegativeCase() throws IOException, JSONException {
-   
       esbRequestHeadersMap.put("Action", "urn:updateCompany");
       RestResponse<JSONObject> esbRestResponse =
             sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_updateCompany_negative.json",
@@ -635,7 +610,6 @@ public class HubspotConnectorIntegrationTest extends ConnectorIntegrationTestBas
     */
    @Test(priority = 1, groups = { "wso2.esb" }, dependsOnMethods = { "testUpdateCompanyWithOptionalParameters" }, description = "hubspot {getCompany} integration test with mandatory parameters.")
    public void testGetCompanyWithMandatoryParameters() throws IOException, JSONException {
-   
       esbRequestHeadersMap.put("Action", "urn:getCompany");
       RestResponse<JSONObject> esbRestResponse =
             sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_getCompany_mandatory.json");
@@ -663,7 +637,6 @@ public class HubspotConnectorIntegrationTest extends ConnectorIntegrationTestBas
       Assert.assertEquals(esbRestResponse.getBody().getJSONObject("properties").getJSONObject("name")
             .getString("value"),
             apiRestResponse.getBody().getJSONObject("properties").getJSONObject("name").getString("value"));
-      
    }
    
    /**
@@ -682,7 +655,6 @@ public class HubspotConnectorIntegrationTest extends ConnectorIntegrationTestBas
     */
    @Test(priority = 1, groups = { "wso2.esb" }, description = "hubspot {getCompany} integration test with negative case.")
    public void testGetCompanyWithNegativeCase() throws IOException, JSONException {
-   
       esbRequestHeadersMap.put("Action", "urn:getCompany");
       RestResponse<JSONObject> esbRestResponse =
             sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_getCompany_negative.json");
@@ -712,7 +684,6 @@ public class HubspotConnectorIntegrationTest extends ConnectorIntegrationTestBas
    @Test(priority = 1, groups = { "wso2.esb" }, dependsOnMethods = { "testCreateContactWithMandatoryParameters",
          "testUpdateCompanyWithOptionalParameters" }, description = "hubspot {addContactToCompany} integration test with mandatory parameters.")
    public void testAddContactToCompanyWithMandatoryParameters() throws IOException, JSONException, InterruptedException {
-   
       esbRequestHeadersMap.put("Action", "urn:addContactToCompany");
       Thread.sleep(Long.parseLong(connectorProperties.getProperty("timeout")));
       String apiEndpoint =
@@ -739,7 +710,6 @@ public class HubspotConnectorIntegrationTest extends ConnectorIntegrationTestBas
       
       Assert.assertEquals(connectorProperties.getProperty("companyIdOptional"), apiRestResponse.getBody()
             .getJSONObject("properties").getJSONObject("associatedcompanyid").getString("value"));
-      
    }
    
    /**
@@ -758,7 +728,6 @@ public class HubspotConnectorIntegrationTest extends ConnectorIntegrationTestBas
     */
    @Test(priority = 1, groups = { "wso2.esb" }, description = "hubspot {addContactToCompany} integration test with negative case.")
    public void testAddContactToCompanyWithNegativeCase() throws IOException, JSONException {
-   
       esbRequestHeadersMap.put("Action", "urn:addContactToCompany");
       RestResponse<JSONObject> esbRestResponse =
             sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_addContactToCompany_negative.json");
@@ -783,7 +752,6 @@ public class HubspotConnectorIntegrationTest extends ConnectorIntegrationTestBas
     */
    @Test(priority = 1, groups = { "wso2.esb" }, dependsOnMethods = { "testGetCompanyWithMandatoryParameters" }, description = "hubspot {listRecentlyCreatedCompanies} integration test with mandatory parameters.")
    public void testListRecentlyCreatedCompaniesWithMandatoryParameters() throws IOException, JSONException {
-   
       esbRequestHeadersMap.put("Action", "urn:listRecentlyCreatedCompanies");
       RestResponse<JSONObject> esbRestResponse =
             sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap,
@@ -802,7 +770,6 @@ public class HubspotConnectorIntegrationTest extends ConnectorIntegrationTestBas
             .getString("hasMore"));
       Assert.assertEquals(esbRestResponse.getBody().getString("offset"), apiRestResponse.getBody().getString("offset"));
       Assert.assertEquals(esbRestResponse.getBody().getString("total"), apiRestResponse.getBody().getString("total"));
-      
    }
    
    /**
@@ -815,7 +782,6 @@ public class HubspotConnectorIntegrationTest extends ConnectorIntegrationTestBas
     */
    @Test(priority = 1, groups = { "wso2.esb" }, dependsOnMethods = { "testGetCompanyWithMandatoryParameters" }, description = "hubspot {listRecentlyCreatedCompanies} integration test with optional parameters.")
    public void testListRecentlyCreatedCompaniesWithOptionalParameters() throws IOException, JSONException {
-   
       esbRequestHeadersMap.put("Action", "urn:listRecentlyCreatedCompanies");
       RestResponse<JSONObject> esbRestResponse =
             sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap,
@@ -830,7 +796,6 @@ public class HubspotConnectorIntegrationTest extends ConnectorIntegrationTestBas
             .getString("hasMore"));
       Assert.assertEquals(esbRestResponse.getBody().getString("offset"), apiRestResponse.getBody().getString("offset"));
       Assert.assertEquals(esbRestResponse.getBody().getString("total"), apiRestResponse.getBody().getString("total"));
-      
    }
    
    /**
@@ -843,7 +808,6 @@ public class HubspotConnectorIntegrationTest extends ConnectorIntegrationTestBas
     */
    @Test(priority = 1, groups = { "wso2.esb" }, description = "hubspot {listRecentlyCreatedCompanies} integration test with negative case.")
    public void testListRecentlyCreatedCompaniesWithNegativeCase() throws IOException, JSONException {
-   
       esbRequestHeadersMap.put("Action", "urn:listRecentlyCreatedCompanies");
       
       RestResponse<JSONObject> esbRestResponse =
@@ -854,9 +818,7 @@ public class HubspotConnectorIntegrationTest extends ConnectorIntegrationTestBas
             apiUrl + "/companies/v2/companies/recent/created?hapikey=" + apiKey + "&count=invalid&offset=invalid";
       RestResponse<JSONObject> apiRestResponse = sendJsonRestRequest(apiEndpoint, "GET", apiRequestHeadersMap);
       
-      Assert.assertEquals(esbRestResponse.getHttpStatusCode(), 404);
-      Assert.assertEquals(apiRestResponse.getHttpStatusCode(), 404);
-      
+      Assert.assertEquals(esbRestResponse.getHttpStatusCode(), apiRestResponse.getHttpStatusCode());
    }
    
    /**
@@ -869,7 +831,6 @@ public class HubspotConnectorIntegrationTest extends ConnectorIntegrationTestBas
     */
    @Test(priority = 1, groups = { "wso2.esb" }, dependsOnMethods = { "testGetCompanyWithMandatoryParameters" }, description = "hubspot {listRecentlyModifiedCompanies} integration test with mandatory parameters.")
    public void testListRecentlyModifiedCompaniesWithMandatoryParameters() throws IOException, JSONException {
-   
       esbRequestHeadersMap.put("Action", "urn:listRecentlyModifiedCompanies");
       RestResponse<JSONObject> esbRestResponse =
             sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap,
@@ -888,7 +849,7 @@ public class HubspotConnectorIntegrationTest extends ConnectorIntegrationTestBas
             .getString("hasMore"));
       Assert.assertEquals(esbRestResponse.getBody().getString("offset"), apiRestResponse.getBody().getString("offset"));
       Assert.assertEquals(esbRestResponse.getBody().getString("total"), apiRestResponse.getBody().getString("total"));
-      
+
    }
    
    /**
@@ -901,7 +862,6 @@ public class HubspotConnectorIntegrationTest extends ConnectorIntegrationTestBas
     */
    @Test(priority = 1, groups = { "wso2.esb" }, dependsOnMethods = { "testGetCompanyWithMandatoryParameters" }, description = "hubspot {listRecentlyModifiedCompanies} integration test with optional parameters.")
    public void testListRecentlyModifiedCompaniesWithOptionalParameters() throws IOException, JSONException {
-   
       esbRequestHeadersMap.put("Action", "urn:listRecentlyModifiedCompanies");
       RestResponse<JSONObject> esbRestResponse =
             sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap,
@@ -916,7 +876,6 @@ public class HubspotConnectorIntegrationTest extends ConnectorIntegrationTestBas
             .getString("hasMore"));
       Assert.assertEquals(esbRestResponse.getBody().getString("offset"), apiRestResponse.getBody().getString("offset"));
       Assert.assertEquals(esbRestResponse.getBody().getString("total"), apiRestResponse.getBody().getString("total"));
-      
    }
    
    /**
@@ -929,7 +888,6 @@ public class HubspotConnectorIntegrationTest extends ConnectorIntegrationTestBas
     */
    @Test(priority = 1, groups = { "wso2.esb" }, description = "hubspot {listRecentlyModifiedCompanies} integration test with negative case.")
    public void testListRecentlyModifiedCompaniesWithNegativeCase() throws IOException, JSONException {
-   
       esbRequestHeadersMap.put("Action", "urn:listRecentlyModifiedCompanies");
       
       RestResponse<JSONObject> esbRestResponse =
@@ -940,9 +898,7 @@ public class HubspotConnectorIntegrationTest extends ConnectorIntegrationTestBas
             apiUrl + "/companies/v2/companies/recent/modified?hapikey=" + apiKey + "&count=invalid&offset=invalid";
       RestResponse<JSONObject> apiRestResponse = sendJsonRestRequest(apiEndpoint, "GET", apiRequestHeadersMap);
       
-      Assert.assertEquals(esbRestResponse.getHttpStatusCode(), 404);
-      Assert.assertEquals(apiRestResponse.getHttpStatusCode(), 404);
-      
+      Assert.assertEquals(esbRestResponse.getHttpStatusCode(), apiRestResponse.getHttpStatusCode());
    }
    
    /**
@@ -961,7 +917,6 @@ public class HubspotConnectorIntegrationTest extends ConnectorIntegrationTestBas
     */
    @Test(priority = 1, groups = { "wso2.esb" }, dependsOnMethods = { "testAddContactToCompanyWithMandatoryParameters" }, description = "hubspot {createDeal} integration test with optional parameters.")
    public void testCreateDealWithOptionalParameters() throws IOException, JSONException {
-   
       esbRequestHeadersMap.put("Action", "urn:createDeal");
       RestResponse<JSONObject> esbRestResponse =
             sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_createDeal_optional.json");
@@ -979,7 +934,6 @@ public class HubspotConnectorIntegrationTest extends ConnectorIntegrationTestBas
             .getJSONObject("associations").getJSONArray("associatedCompanyIds").getString(0));
       Assert.assertEquals(connectorProperties.getProperty("contactIdMandatory"), apiRestResponse.getBody()
             .getJSONObject("associations").getJSONArray("associatedVids").getString(0));
-      
    }
    
    /**
@@ -992,7 +946,6 @@ public class HubspotConnectorIntegrationTest extends ConnectorIntegrationTestBas
     */
    @Test(priority = 1, groups = { "wso2.esb" }, description = "hubspot {createDeal} integration test with negative case.")
    public void testCreateDealWithNegativeCase() throws IOException, JSONException {
-   
       esbRequestHeadersMap.put("Action", "urn:createDeal");
       RestResponse<JSONObject> esbRestResponse =
             sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_createDeal_negative.json");
@@ -1006,7 +959,6 @@ public class HubspotConnectorIntegrationTest extends ConnectorIntegrationTestBas
       Assert.assertEquals(esbRestResponse.getBody().getString("message"), apiRestResponse.getBody()
             .getString("message"));
       Assert.assertEquals(esbRestResponse.getBody().getString("status"), apiRestResponse.getBody().getString("status"));
-      
    }
    
    /**
@@ -1025,7 +977,6 @@ public class HubspotConnectorIntegrationTest extends ConnectorIntegrationTestBas
     */
    @Test(priority = 1, groups = { "wso2.esb" }, dependsOnMethods = { "testCreateDealWithOptionalParameters" }, description = "hubspot {updateDeal} integration test with optional parameters.")
    public void testUpdateDealWithOptionalParameters() throws IOException, JSONException {
-   
       esbRequestHeadersMap.put("Action", "urn:updateDeal");
       final String apiEndpoint =
             apiUrl + "/deals/v1/deal/" + connectorProperties.getProperty("dealIdOptional") + "?hapikey=" + apiKey;
@@ -1051,7 +1002,6 @@ public class HubspotConnectorIntegrationTest extends ConnectorIntegrationTestBas
       Assert.assertTrue(apiRestResponse.getBody().getJSONObject("properties").has("dealtype"));
       Assert.assertEquals(dealType, apiRestResponse.getBody().getJSONObject("properties").getJSONObject("dealtype")
             .getString("value"));
-      
    }
    
    /**
@@ -1064,7 +1014,6 @@ public class HubspotConnectorIntegrationTest extends ConnectorIntegrationTestBas
     */
    @Test(priority = 1, groups = { "wso2.esb" }, dependsOnMethods = { "testCreateDealWithOptionalParameters" }, description = "hubspot {updateDeal} integration test with negative case.")
    public void testUpdateDealWithNegativeCase() throws IOException, JSONException {
-   
       esbRequestHeadersMap.put("Action", "urn:updateDeal");
       RestResponse<JSONObject> esbRestResponse =
             sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_updateDeal_negative.json");
@@ -1079,7 +1028,6 @@ public class HubspotConnectorIntegrationTest extends ConnectorIntegrationTestBas
       Assert.assertEquals(esbRestResponse.getBody().getString("message"), apiRestResponse.getBody()
             .getString("message"));
       Assert.assertEquals(esbRestResponse.getBody().getString("status"), apiRestResponse.getBody().getString("status"));
-      
    }
    
    /**
@@ -1092,7 +1040,6 @@ public class HubspotConnectorIntegrationTest extends ConnectorIntegrationTestBas
     */
    @Test(priority = 1, groups = { "wso2.esb" }, dependsOnMethods = { "testUpdateDealWithOptionalParameters" }, description = "hubspot {getRecentlyCreatedDeals} integration test with mandatory parameters.")
    public void testGetRecentlyCreatedDealsWithMandatoryParameters() throws IOException, JSONException {
-   
       esbRequestHeadersMap.put("Action", "urn:getRecentlyCreatedDeals");
       RestResponse<JSONObject> esbRestResponse =
             sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_getRecentlyCreatedDeals_mandatory.json");
@@ -1110,7 +1057,6 @@ public class HubspotConnectorIntegrationTest extends ConnectorIntegrationTestBas
             .getString("hasMore"));
       Assert.assertEquals(esbRestResponse.getBody().getString("offset"), apiRestResponse.getBody().getString("offset"));
       Assert.assertEquals(esbRestResponse.getBody().getString("total"), apiRestResponse.getBody().getString("total"));
-      
    }
    
    /**
@@ -1123,7 +1069,6 @@ public class HubspotConnectorIntegrationTest extends ConnectorIntegrationTestBas
     */
    @Test(priority = 1, groups = { "wso2.esb" }, dependsOnMethods = { "testUpdateDealWithOptionalParameters" }, description = "hubspot {getRecentlyCreatedDeals} integration test with optional parameters.")
    public void testGetRecentlyCreatedDealsWithOptionalParameters() throws IOException, JSONException {
-   
       esbRequestHeadersMap.put("Action", "urn:getRecentlyCreatedDeals");
       RestResponse<JSONObject> esbRestResponse =
             sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_getRecentlyCreatedDeals_optional.json");
@@ -1141,7 +1086,6 @@ public class HubspotConnectorIntegrationTest extends ConnectorIntegrationTestBas
             .getString("hasMore"));
       Assert.assertEquals(esbRestResponse.getBody().getString("offset"), apiRestResponse.getBody().getString("offset"));
       Assert.assertEquals(esbRestResponse.getBody().getString("total"), apiRestResponse.getBody().getString("total"));
-      
    }
    
    /**
@@ -1154,7 +1098,6 @@ public class HubspotConnectorIntegrationTest extends ConnectorIntegrationTestBas
     */
    @Test(priority = 1, groups = { "wso2.esb" }, dependsOnMethods = { "testUpdateDealWithOptionalParameters" }, description = "hubspot {getRecentlyCreatedDeals} integration test with negative case.")
    public void testGetRecentlyCreatedDealsWithNegativeCase() throws IOException, JSONException {
-   
       esbRequestHeadersMap.put("Action", "urn:getRecentlyCreatedDeals");
       RestResponse<JSONObject> esbRestResponse =
             sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_getRecentlyCreatedDeals_negative.json");
@@ -1162,9 +1105,7 @@ public class HubspotConnectorIntegrationTest extends ConnectorIntegrationTestBas
       final String apiEndpoint = apiUrl + "/deals/v1/deal/recent/created?hapikey=" + apiKey + "&count=invalid&offset=invalid";
       RestResponse<JSONObject> apiRestResponse = sendJsonRestRequest(apiEndpoint, "GET", apiRequestHeadersMap);
       
-      Assert.assertEquals(esbRestResponse.getHttpStatusCode(), 404);
-      Assert.assertEquals(apiRestResponse.getHttpStatusCode(), 404);
-      
+      Assert.assertEquals(esbRestResponse.getHttpStatusCode(), apiRestResponse.getHttpStatusCode());
    }
    
    /**
@@ -1177,7 +1118,6 @@ public class HubspotConnectorIntegrationTest extends ConnectorIntegrationTestBas
     */
    @Test(priority = 1, groups = { "wso2.esb" }, dependsOnMethods = { "testUpdateDealWithOptionalParameters" }, description = "hubspot {getRecentlyModifiedDeals} integration test with mandatory parameters.")
    public void testGetRecentlyModifiedDealsWithMandatoryParameters() throws IOException, JSONException {
-   
       esbRequestHeadersMap.put("Action", "urn:getRecentlyModifiedDeals");
       RestResponse<JSONObject> esbRestResponse =
             sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_getRecentlyModifiedDeals_mandatory.json");
@@ -1195,7 +1135,6 @@ public class HubspotConnectorIntegrationTest extends ConnectorIntegrationTestBas
             .getString("hasMore"));
       Assert.assertEquals(esbRestResponse.getBody().getString("offset"), apiRestResponse.getBody().getString("offset"));
       Assert.assertEquals(esbRestResponse.getBody().getString("total"), apiRestResponse.getBody().getString("total"));
-      
    }
    
    /**
@@ -1208,7 +1147,6 @@ public class HubspotConnectorIntegrationTest extends ConnectorIntegrationTestBas
     */
    @Test(priority = 1, groups = { "wso2.esb" }, dependsOnMethods = { "testUpdateDealWithOptionalParameters" }, description = "hubspot {getRecentlyModifiedDeals} integration test with optional parameters.")
    public void testGetRecentlyModifiedDealsWithOptionalParameters() throws IOException, JSONException {
-   
       esbRequestHeadersMap.put("Action", "urn:getRecentlyModifiedDeals");
       RestResponse<JSONObject> esbRestResponse =
             sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_getRecentlyModifiedDeals_optional.json");
@@ -1226,7 +1164,6 @@ public class HubspotConnectorIntegrationTest extends ConnectorIntegrationTestBas
             .getString("hasMore"));
       Assert.assertEquals(esbRestResponse.getBody().getString("offset"), apiRestResponse.getBody().getString("offset"));
       Assert.assertEquals(esbRestResponse.getBody().getString("total"), apiRestResponse.getBody().getString("total"));
-      
    }
    
    /**
@@ -1239,7 +1176,6 @@ public class HubspotConnectorIntegrationTest extends ConnectorIntegrationTestBas
     */
    @Test(priority = 1, groups = { "wso2.esb" }, dependsOnMethods = { "testUpdateDealWithOptionalParameters" }, description = "hubspot {getRecentlyModifiedDeals} integration test with negative case.")
    public void testGetRecentlyModifiedDealsWithNegativeCase() throws IOException, JSONException {
-   
       esbRequestHeadersMap.put("Action", "urn:getRecentlyModifiedDeals");
       RestResponse<JSONObject> esbRestResponse =
             sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_getRecentlyModifiedDeals_negative.json");
@@ -1248,9 +1184,7 @@ public class HubspotConnectorIntegrationTest extends ConnectorIntegrationTestBas
             apiUrl + "/deals/v1/deal/recent/modified?hapikey=" + apiKey + "&count=invalid&offset=invalid";
       RestResponse<JSONObject> apiRestResponse = sendJsonRestRequest(apiEndpoint, "GET", apiRequestHeadersMap);
       
-      Assert.assertEquals(esbRestResponse.getHttpStatusCode(), 404);
-      Assert.assertEquals(apiRestResponse.getHttpStatusCode(), 404);
-      
+      Assert.assertEquals(esbRestResponse.getHttpStatusCode(), apiRestResponse.getHttpStatusCode());
    }
    
    /**
@@ -1263,7 +1197,6 @@ public class HubspotConnectorIntegrationTest extends ConnectorIntegrationTestBas
     */
    @Test(priority = 1, groups = { "wso2.esb" }, description = "hubspot {createEngagement} integration test with mandatory parameters.")
    public void testCreateEngagementWithMandatoryParameters() throws IOException, JSONException {
-   
       esbRequestHeadersMap.put("Action", "urn:createEngagement");
       final String engagementType = "NOTE";
       parametersMap.put("engagementType", engagementType);
@@ -1277,7 +1210,6 @@ public class HubspotConnectorIntegrationTest extends ConnectorIntegrationTestBas
       RestResponse<JSONObject> apiRestResponse = sendJsonRestRequest(apiEndpoint, "GET", apiRequestHeadersMap);
       
       Assert.assertEquals(engagementType, apiRestResponse.getBody().getJSONObject("engagement").getString("type"));
-      
    }
    
    /**
@@ -1290,7 +1222,6 @@ public class HubspotConnectorIntegrationTest extends ConnectorIntegrationTestBas
     */
    @Test(priority = 1, groups = { "wso2.esb" }, dependsOnMethods = { "testCreateDealWithOptionalParameters" }, description = "hubspot {createEngagement} integration test with optional parameters.")
    public void testCreateEngagementWithOptionalParameters() throws IOException, JSONException {
-   
       esbRequestHeadersMap.put("Action", "urn:createEngagement");
       final String engagementType = "NOTE";
       final String metadataBody = "Sample Note Added.";
@@ -1316,7 +1247,6 @@ public class HubspotConnectorIntegrationTest extends ConnectorIntegrationTestBas
             .getJSONObject("associations").getJSONArray("companyIds").getString(0));
       Assert.assertEquals(connectorProperties.getProperty("dealIdOptional"),
             apiRestResponse.getBody().getJSONObject("associations").getJSONArray("dealIds").getString(0));
-      
    }
    
    /**
@@ -1329,7 +1259,6 @@ public class HubspotConnectorIntegrationTest extends ConnectorIntegrationTestBas
     */
    @Test(priority = 1, groups = { "wso2.esb" }, dependsOnMethods = { "testCreateDealWithOptionalParameters" }, description = "hubspot {createEngagement} integration test with negative case.")
    public void testCreateEngagementWithNegativeCase() throws IOException, JSONException {
-   
       esbRequestHeadersMap.put("Action", "urn:createEngagement");
       RestResponse<JSONObject> esbRestResponse =
             sendJsonRestRequest(proxyUrl, "POST", esbRequestHeadersMap, "esb_createEngagement_negative.json");
@@ -1343,7 +1272,6 @@ public class HubspotConnectorIntegrationTest extends ConnectorIntegrationTestBas
       Assert.assertEquals(esbRestResponse.getBody().getString("message"), apiRestResponse.getBody()
             .getString("message"));
       Assert.assertEquals(esbRestResponse.getBody().getString("status"), apiRestResponse.getBody().getString("status"));
-      
    }
    
 }
