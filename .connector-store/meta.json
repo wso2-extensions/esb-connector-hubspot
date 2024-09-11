@@ -4,7 +4,7 @@
     "category": "Sales and Marketing",
     "documentationUrl": "https://docs.wso2.com/display/ESBCONNECTORS/Hubspot+Connector",
     "description": "The Hubspot connector allows you to access the Hubspot REST API through WSO2 ESB. Hubspot is an inbound marketing and sales platform that helps companies attract visitors, convert leads, and close customers.",
-    "status": "Active",
+    "status": "Inactive",
     "labels": [
         "connector"
     ],
